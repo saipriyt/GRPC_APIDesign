@@ -1,0 +1,60 @@
+syntax = "proto3";
+package books;
+
+service Books{
+
+    rpc getBook(getBookRequest) returns (getBookResponse);
+
+    rpc setBook(createBookRequest) returns (createBookResponse);
+}
+
+message Book {
+    //Book's featuring fields: ISBN - a unique string id, title - a string,  author - a string name, genre (an enum field), publishing year - an integer
+    string isbn = 1;
+    string title = 2;
+    string author = 3;
+    GENRE genre = 4;
+    int32 publishing_year = 5;
+}
+
+message getBookRequest{
+        //Primary key for the book
+        string isbn = 1;
+}
+
+message getBookResponse {
+    Book books = 1;
+}
+
+message createBookRequest {
+    Book books = 1;
+}
+
+message createBookResponse {
+    string isbn = 1;
+}
+
+message InventoryItem {
+    //InventoryItem fields: inventory number - kind of, a primary key, oneof field - refer to a Book object, status - an enum of “available”, “taken”
+    string invNumber = 6;
+    oneof bObj{
+        Book bookObject = 7;
+    }
+    STATUS status = 8;
+}
+
+//an enum field for Genre with a list of 4 different genres
+enum GENRE{
+    COMEDY = 0;
+    CRIME = 1;
+    DRAMA = 2;
+    FANTASY = 3;
+}
+
+//status - an enum field of “available” and “taken”
+enum STATUS{
+    AVAILABLE = 0;
+    TAKEN = 1;
+}
+
+//To run - >python3 -m grpc_tools.protoc -I./protos --python_out=. --pyi_out=. --grpc_python_out=. ./protos/books.proto 
